@@ -260,12 +260,11 @@ def output_json(df):
     '''
     ext = input('What file type? (csv or json): ')
     #path = input('Path for json file: ')
-    path = '/Users/thomasmulhern/Desktop/'
-    name = input('File name: ')
+    path = input('Output path: ')
     if ext == 'csv':
-        return df.to_csv(path + name)
+        return df.to_csv(path)
     if ext == 'json':
-        return df.to_json(path+name)
+        return df.to_json(path)
 
 
 
