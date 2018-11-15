@@ -20,7 +20,8 @@ def create_file(num_rows):
             Index: []
     '''
 
-    columns = ['mongoID','timestamp','type','targetUserId','targetUserName','creatorUserId','creatorUserName','objectId']
+    columns = ['mongoID','timestamp','type','targetUserId','targetUserName', 'targetType', 'creatorUserId',
+               'creatorUserName','creatorType','objectId']
     df = pd.DataFrame(columns=columns, index=np.arange(0, num_rows))
     return df
 
@@ -133,9 +134,11 @@ def choose_target(event, creator):
             elif pat == 1 and clin == 0:
                 b = choice(user_df.iloc[user_df[user_df['userType'] == 'Patient'].index]['user'].values)
                 return b
-            elif clin == 1 and pat == 0:
-                c = choice(user_df.iloc[user_df[user_df['userType'] == 'Clinician'].index]['user'].values)
-                return c
+            # elif clin == 1 and pat == 0:
+                #c = choice(user_df.iloc[user_df[user_df['userType'] == 'Clinician'].index]['user'].values)
+                #return c
+            else:
+                return creator
         else:
             print("HOUSTON WE HAVE A CLINICIAN PROBLEM")
 
@@ -149,12 +152,14 @@ def choose_target(event, creator):
                 choice_type = choice(['Patient', "Clinician"])
                 d = choice(user_df.iloc[user_df[user_df['userType'] == choice_type].index]['user'].values)
                 return d
-            elif pat == 1 and clin == 0:
-                e = choice(user_df.iloc[user_df[user_df['userType'] == 'Patient'].index]['user'].values)
-                return e
             elif clin == 1 and pat == 0:
                 f = choice(user_df.iloc[user_df[user_df['userType'] == 'Clinician'].index]['user'].values)
                 return f
+            # elif pat == 1 and clin == 0:
+                # e = choice(user_df.iloc[user_df[user_df['userType'] == 'Patient'].index]['user'].values)
+                # return e
+            else:
+                return creator
         else:
             print("HOUSTON WE HAVE A PATIENT PROBLEM")
 
@@ -180,6 +185,28 @@ def get_userIDs(creator, target):
     creatorID = user_df[user_df['user'] == creator]['userId'].item()
     targetID = user_df[user_df['user'] == target]['userId'].item()
     return creatorID, targetID
+
+def get_types(creator, target):
+    '''
+    Description: Get the creator and target types
+    Inputs: string, string
+    Return: string, string
+    Examples:
+
+        >>> get_types(clinician_2, clinician_2)
+        Clinician, Clinician
+
+        >>> get_types(clinician_2, Patient_5)
+       Clinician, Patient
+
+        >>> get_types(Patient_5, clinician_2)
+        Patient, Clinician
+    '''
+    creator_type = user_df.iloc[user_df[user_df['user'] == creator].index]['userType'].item()
+    target_type = user_df.iloc[user_df[user_df['user'] == target].index]['userType'].item()
+
+    return creator_type, target_type
+
 
 
 def get_objectId(event):
@@ -248,14 +275,16 @@ def create_mongoid():
     return mongoid
 
 
-def output_json(df):
+def output(df):
     '''
     Description: Turns the pandas data frame we've been working on into a json file so we can import it other
     databases, and data viz/ analytics tools for testing
     Inputs: Pandas data frame with the data we've iterated to collect
     Return: Json file
     Examples:
-        >>> output_json(df)
+        >>> output(df)
+        >>>What file type? (csv or json): <<csv>>
+        >>>Output path: <</Users/thomasmulhern/Desktop/data.csv>>
         Process finished with exit code 0
     '''
     ext = input('What file type? (csv or json): ')
@@ -272,10 +301,10 @@ def output_json(df):
 if __name__ == "__main__":
 
     # import data into data frames
-    user_df = pd.read_csv('/Users/thomasmulhern/Library/Preferences/PyCharmCE2018.2/scratches/user_data.csv')
-    event_df = pd.read_csv('/Users/thomasmulhern/Library/Preferences/PyCharmCE2018.2/scratches/event_data.csv')
-    cp_df = pd.read_csv('/Users/thomasmulhern/Library/Preferences/PyCharmCE2018.2/scratches/cp.csv')
-    cc_df = pd.read_csv('/Users/thomasmulhern/Library/Preferences/PyCharmCE2018.2/scratches/cc.csv')
+    user_df = pd.read_csv('/Users/thomasmulhern/new_desk/post/itether/data_generator/event_generator/data/user_data.csv')
+    event_df = pd.read_csv('/Users/thomasmulhern/new_desk/post/itether/data_generator/event_generator/data/event_data.csv')
+    cp_df = pd.read_csv('/Users/thomasmulhern/new_desk/post/itether/data_generator/event_generator/data/cp.csv')
+    cc_df = pd.read_csv('/Users/thomasmulhern/new_desk/post/itether/data_generator/event_generator/data/cc.csv')
 
     # get user input for number of rows to create
     num_rows = int(input('How many rows of data do you want?: '))
@@ -288,7 +317,7 @@ if __name__ == "__main__":
         creator = choose_creator(event)
         target = choose_target(event, creator)
         creatorID, targetID = get_userIDs(creator, target)
-
+        creatorType, targetType = get_types(creator, target)
         objectid = get_objectId(event)
         timestamp, seconds = create_timestamp(start_date)
         start_date = seconds
@@ -296,7 +325,8 @@ if __name__ == "__main__":
 
         # Add rows of data to the data frame
         df.iloc[index] = {'type':event, 'creatorUserName':creator, 'targetUserName':target, 'creatorUserId':creatorID,
-                          'targetUserId':targetID, 'objectId':objectid, 'timestamp':timestamp, 'mongoID':mongoid}
+                          'targetUserId':targetID, 'objectId':objectid, 'timestamp':timestamp, 'mongoID':mongoid,
+                          'creatorType':creatorType, 'targetType':targetType}
 
     #print(df.iloc[0])
-    output_json(df)
+    output(df)
