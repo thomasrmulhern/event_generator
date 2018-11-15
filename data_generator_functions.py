@@ -250,10 +250,10 @@ def create_timestamp(startDate):
         "2018-11-13T15:51:02.22000"
     '''
 
-    delta = choice(np.arange(5, 90))
+    delta = choice(np.arange(5, 360))
     epoch = startDate + delta
     dt = datetime.datetime.fromtimestamp(epoch)
-    new_dt = "".join('{0}-{1}-{2}T{3}:{4}:{5}.{6}'.format(str(dt.year), str(dt.month), str(dt.day), str(dt.hour),
+    new_dt = "".join('{0}-{1}-{2} {3}:{4}:{5}.{6}'.format(str(dt.year), str(dt.month), str(dt.day), str(dt.hour),
                                                           str(dt.minute),str(dt.second), str(dt.microsecond)))
     return new_dt, epoch
 
