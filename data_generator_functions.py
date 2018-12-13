@@ -6,6 +6,7 @@ import string
 
 
 def create_file(num_rows):
+    #TODO: Write code to dump straight to a csv rather than creating a pandas dataframe
 
     '''
     Description: Create a pandas df that will hold all the data and ultimately output to json. Should have a column for
@@ -22,6 +23,7 @@ def create_file(num_rows):
 
     columns = ['mongoID','timestamp','type','targetUserId','targetUserName', 'targetType', 'creatorUserId',
                'creatorUserName','creatorType','objectId']
+
     df = pd.DataFrame(columns=columns, index=np.arange(0, num_rows))
     return df
 
@@ -297,7 +299,7 @@ def output(df):
 
 
 
-# TODO: finish functions to create target, timestamp, and mongoid
+
 if __name__ == "__main__":
 
     # import data into data frames
