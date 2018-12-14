@@ -7,8 +7,8 @@ from random import randint
 def goal_created(created):
     """
     Description: Create an event and unique object_id; add id to the "created"
-    set and add the list to the dataframe
-    Input: list to append to
+    set and add the list to the dataframe.
+    Input: list for goals created
     Return: list of two items
     Examples:
         >>> goal_created(created)
@@ -32,8 +32,8 @@ def goal_created(created):
 def goal_completed(created, completed):
     """
     Description: Randomly select a goal from the "created" list and move it to
-    the "completed" list
-    Input: list to remove from, list to append to
+    the "completed" list.
+    Input: list for goals created, list for goals completed
     Return: list of two items
     Examples:
         >>> goal_completed(created, completed)
@@ -60,8 +60,8 @@ def approved_or_denied(completed, app_or_den):
     """
     Description: Randomly select object_id from the list of completed goals and
     approve or deny it. If it gets denied, send it back to the "completed" list
-    to be recompleted and approved
-    Input: list to remove from, list to append to
+    to be recompleted and approved.
+    Input: list of completed goals, list of goals to be approved or denied
     Return: list of two items
     Examples:
         >>> approved_or_denied(completed, app_or_den)

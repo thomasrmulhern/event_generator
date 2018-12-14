@@ -238,7 +238,7 @@ def create_timestamp(startDate):
     '''
     Description: Generates a timestamp by converting epoch to timestamp after adding a random number between 10 and 90
     equating to between 10 and 90 minutes
-    Inputs:
+    Inputs: epoch start timer
     Return: timestamp object
     Examples:
 
@@ -252,11 +252,12 @@ def create_timestamp(startDate):
         "2018-11-13T15:51:02.22000"
     '''
 
-    delta = choice(np.arange(5, 360))
+    delta = choice(np.arange(300, 15000))
     epoch = startDate + delta
     dt = datetime.datetime.fromtimestamp(epoch)
     new_dt = "".join('{0}-{1}-{2} {3}:{4}:{5}.{6}'.format(str(dt.year), str(dt.month), str(dt.day), str(dt.hour),
                                                           str(dt.minute),str(dt.second), str(dt.microsecond)))
+    #print (f"new dt: {new_dt}, delta: {delta/3600}")
     return new_dt, epoch
 
 def create_mongoid():
