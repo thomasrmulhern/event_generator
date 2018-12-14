@@ -5,10 +5,21 @@ from random import randint
 
 
 def goal_created(created):
-    # Create an event and unique object_id; add id to the "created" set and add
-    # the list to the dataframe
-    # Input: list to append to
-    # Output: list of two items
+    """
+    Description: Create an event and unique object_id; add id to the "created"
+    set and add the list to the dataframe
+    Input: list to append to
+    Return: list of two items
+    Examples:
+        >>> goal_created(created)
+            ['GOAL_CREATED', 950152636]
+
+        >>> goal_created(created)
+            ['GOAL_CREATED', 148614186]
+
+        >>> goal_created(created)
+            ['GOAL_CREATED', 408622160]
+    """
 
     object_id = randint(99999999,999999999)
     while object_id in created or object_id in completed or object_id in app_or_den:
@@ -19,11 +30,21 @@ def goal_created(created):
     return row
 
 def goal_completed(created, completed):
-    # Randomly select a goal from the "created" list and move it to the "completed"
-    # list
-    # Input: list to pull from, list to append to
-    # Output: list of two items
+    """
+    Description: Randomly select a goal from the "created" list and move it to
+    the "completed" list
+    Input: list to remove from, list to append to
+    Return: list of two items
+    Examples:
+        >>> goal_completed(created, completed)
+            ['GOAL_COMPLETED', 148614186]
 
+        >>> goal_completed(created, completed)
+            ['GOAL_COMPLETED', 408622160]
+
+        >>> goal_completed(created, completed)
+            ['GOAL_COMPLETED', 950152636]
+    """
     # Check to make sure the list isn't empty
     if len(created) != 0 and len(created) != None:
         object_id = choice(created, replace=False)
@@ -36,11 +57,22 @@ def goal_completed(created, completed):
         pass
 
 def approved_or_denied(completed, app_or_den):
-    # Randomly select object_id from the list of completed goals and approve or
-    # deny it. If it gets denied, send it back to the "completed" list to be
-    # recompleted and approved
-    # Input: list to pull from, list to append to
-    # Output: list of two items
+    """
+    Description: Randomly select object_id from the list of completed goals and
+    approve or deny it. If it gets denied, send it back to the "completed" list
+    to be recompleted and approved
+    Input: list to remove from, list to append to
+    Return: list of two items
+    Examples:
+        >>> approved_or_denied(completed, app_or_den)
+            ['GOAL_APPROVED', 408622160]
+
+        >>> approved_or_denied(completed, app_or_den)
+            ['GOAL_REJECTED', 950152636]
+
+        >>> approved_or_denied(completed, app_or_den)
+            ['GOAL_APPROVED', 148614186]
+    """
 
     # check to make sure the list isn't empty
     if len(completed) > 0 and len(completed) != None:
