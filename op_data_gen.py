@@ -9,20 +9,21 @@ def create_file(num_rows):
     #TODO: Write code to dump straight to a csv rather than creating a pandas dataframe
 
     '''
-    Description: Create a pandas df that will hold all the data and ultimately output to json. Should have a column for
-    every field we want in our final json file.
+    Description: Create a pandas df that will hold all the data and ultimately
+    output to json. Should have a column for every field we want in our final
+    json file.
     Inputs: None
     Return: Dataframe object
     Example:
         >>>create_file()
             Empty DataFrame
-            Columns: [mongoID, timestamp, type, targetUserId, targetUserName, creatorUserId, creatorUserName,
-            objectId]
+            Columns: [mongoID, timestamp, type, targetUserId, targetUserName,
+            creatorUserId, creatorUserName,objectId]
             Index: []
     '''
 
-    columns = ['mongoID','timestamp','type','targetUserId','targetUserName', 'targetType', 'creatorUserId',
-               'creatorUserName','creatorType','objectId']
+    columns = ['mongoID','timestamp','type','targetUserId','targetUserName',
+    'targetType', 'creatorUserId','creatorUserName','creatorType','objectId']
 
     df = pd.DataFrame(columns=columns, index=np.arange(0, num_rows))
     return df
@@ -59,7 +60,8 @@ def choose_creator(event):
         # certain events happen need to in a certain order and have the right creator e.g. dont let someone open a message
         # before they've been sent one, don't let someone answer a survey before its been assigned to them, etc.
     '''
-    Description: Choose a creator for the previously chosen event based on the type of event and other logic
+    Description: Choose a creator for the previously chosen event based on the
+    type of event and other logic
     Inputs: string
     Return: string
     Examples:
@@ -87,7 +89,8 @@ def choose_creator(event):
     # Choose a value from the possible user types
     user_type = choice(possible_user_types)
 
-    # Enumerate the values of the userType column. Compare the chosen user type to the values, and if they are equal,
+    # Enumerate the values of the userType column. Compare the chosen user type
+    # to the values, and if they are equal,
     # use the index to append potential creators to a list
     possible_users = []
     for index, value in enumerate(user_df['userType']):
@@ -106,7 +109,8 @@ def choose_target(event, creator):
         #clinicians can only create patients
 
     '''
-    Description: Choose an event target based on a specific type of event and a specific creator
+    Description: Choose an event target based on a specific type of event and a
+    specific creator
     Inputs: string
     return: string
     Examples:
@@ -124,51 +128,53 @@ def choose_target(event, creator):
     '''
 
     # If the userType of the row at the index where the
-    if (user_df.iloc[user_df[user_df['user'] == creator].index]['userType'] == "Clinician").item():
+    if (user_df.iloc[user_df[user_df['user'] == creator].index]['userType'] == \
+    "Clinician").item():
         creator_row = cc_df[cc_df['events'] == event]
         if creator_row['creator_clinician'].item() == 1:
             pat = creator_row['target_patient'].item()
             clin = creator_row['target_clinician'].item()
             if pat == 1 and clin == 1:
                 choice_type = choice(['Patient', "Clinician"])
-                a = choice(user_df.iloc[user_df[user_df['userType'] == choice_type].index]['user'].values)
+                a = choice(user_df.iloc[user_df[user_df['userType'] == \
+                choice_type].index]['user'].values)
                 return a
             elif pat == 1 and clin == 0:
-                b = choice(user_df.iloc[user_df[user_df['userType'] == 'Patient'].index]['user'].values)
+                b = choice(user_df.iloc[user_df[user_df['userType'] == \
+                'Patient'].index]['user'].values)
                 return b
-            # elif clin == 1 and pat == 0:
-                #c = choice(user_df.iloc[user_df[user_df['userType'] == 'Clinician'].index]['user'].values)
-                #return c
+
             else:
                 return creator
         else:
             print("HOUSTON WE HAVE A CLINICIAN PROBLEM")
 
 
-    elif (user_df.iloc[user_df[user_df['user'] == creator].index]['userType'] == "Patient").item():
+    elif (user_df.iloc[user_df[user_df['user'] == creator].index]['userType'] ==\
+    "Patient").item():
         creator_row = cp_df[cp_df['events'] == event]
         if creator_row['creator_patient'].item() == 1:
             pat = creator_row['target_patient'].item()
             clin = creator_row['target_clinician'].item()
             if pat == 1 and clin == 1:
                 choice_type = choice(['Patient', "Clinician"])
-                d = choice(user_df.iloc[user_df[user_df['userType'] == choice_type].index]['user'].values)
+                d = choice(user_df.iloc[user_df[user_df['userType'] == \
+                choice_type].index]['user'].values)
                 return d
             elif clin == 1 and pat == 0:
-                f = choice(user_df.iloc[user_df[user_df['userType'] == 'Clinician'].index]['user'].values)
+                f = choice(user_df.iloc[user_df[user_df['userType'] == \
+                'Clinician'].index]['user'].values)
                 return f
-            # elif pat == 1 and clin == 0:
-                # e = choice(user_df.iloc[user_df[user_df['userType'] == 'Patient'].index]['user'].values)
-                # return e
             else:
                 return creator
-        else:
-            print("HOUSTON WE HAVE A PATIENT PROBLEM")
+        # else:
+        #     print("HOUSTON WE HAVE A PATIENT PROBLEM")
 
 
 def get_userIDs(creator, target):
     '''
-    Description: Get the creator and target user names for  the chosen creator and target
+    Description: Get the creator and target user names for  the chosen creator
+    and target.
     Inputs: string
     Return: string, string
     Examples:
@@ -190,7 +196,7 @@ def get_userIDs(creator, target):
 
 def get_types(creator, target):
     '''
-    Description: Get the creator and target types
+    Description: Get the creator and target types.
     Inputs: string, string
     Return: string, string
     Examples:
@@ -204,8 +210,10 @@ def get_types(creator, target):
         >>> get_types(Patient_5, clinician_2)
         Patient, Clinician
     '''
-    creator_type = user_df.iloc[user_df[user_df['user'] == creator].index]['userType'].item()
-    target_type = user_df.iloc[user_df[user_df['user'] == target].index]['userType'].item()
+    creator_type = user_df.iloc[user_df[user_df['user'] == creator].index]\
+    ['userType'].item()
+    target_type = user_df.iloc[user_df[user_df['user'] == target].index]\
+    ['userType'].item()
 
     return creator_type, target_type
 
@@ -229,15 +237,17 @@ def get_objectId(event):
     '''
 
     #
-    return event_df.iloc[event_df[event_df['event']== event].index]['objectId'].item()
+    return event_df.iloc[event_df[event_df['event']== event].index]\
+    ['objectId'].item()
 
 
 def create_timestamp(startDate):
     # TODO: add logic:
         # events happen within realistic times
     '''
-    Description: Generates a timestamp by converting epoch to timestamp after adding a random number between 10 and 90
-    equating to between 10 and 90 minutes
+    Description: Generates a timestamp by converting epoch to timestamp after
+    adding a random number between 10 and 90 equating to between 10 and 90
+    minutes
     Inputs: epoch start timer
     Return: timestamp object
     Examples:
@@ -255,8 +265,9 @@ def create_timestamp(startDate):
     delta = choice(np.arange(300, 15000))
     epoch = startDate + delta
     dt = datetime.datetime.fromtimestamp(epoch)
-    new_dt = "".join('{0}-{1}-{2} {3}:{4}:{5}.{6}'.format(str(dt.year), str(dt.month), str(dt.day), str(dt.hour),
-                                                          str(dt.minute),str(dt.second), str(dt.microsecond)))
+    new_dt = "".join('{0}-{1}-{2} {3}:{4}:{5}.{6}'.format(str(dt.year),
+     str(dt.month), str(dt.day), str(dt.hour), str(dt.minute),str(dt.second),
+     str(dt.microsecond)))
     #print (f"new dt: {new_dt}, delta: {delta/3600}")
     return new_dt, epoch
 
@@ -274,14 +285,16 @@ def create_mongoid():
 
     '''
 
-    mongoid = ''.join([choice(string.ascii_letters + string.digits) for n in range(24)])
+    mongoid = ''.join([choice(string.ascii_letters + string.digits) for n in \
+    range(24)])
     return mongoid
 
 
 def output(df):
     '''
-    Description: Turns the pandas data frame we've been working on into a json file so we can import it other
-    databases, and data viz/ analytics tools for testing
+    Description: Turns the pandas data frame we've been working on into a json
+    file so we can import it other databases, and data viz analytics tools for
+    testing
     Inputs: Pandas data frame with the data we've iterated to collect
     Return: Json file
     Examples:
@@ -312,9 +325,11 @@ if __name__ == "__main__":
     # get user input for number of rows to create
     num_rows = int(input('How many rows of data do you want?: '))
     df = create_file(num_rows)
-    start_date = 1452233440.404116 # 2016, 1, 7, 23, 10, 40, 404116 # There is no special significance to this date
+    start_date = 1452233440.404116 # 2016, 1, 7, 23, 10, 40, 404116 # There is
+    # no special significance to this date
 
-    # Create the data for a single line, add it to the dataframe, and repeat for the length of the dataframe
+    # Create the data for a single line, add it to the dataframe, and repeat for
+    # the length of the dataframe
     for index in range(num_rows):
         event = choose_event(event_df)
         creator = choose_creator(event)
@@ -327,9 +342,10 @@ if __name__ == "__main__":
         mongoid = create_mongoid()
 
         # Add rows of data to the data frame
-        df.iloc[index] = {'type':event, 'creatorUserName':creator, 'targetUserName':target, 'creatorUserId':creatorID,
-                          'targetUserId':targetID, 'objectId':objectid, 'timestamp':timestamp, 'mongoID':mongoid,
-                          'creatorType':creatorType, 'targetType':targetType}
+        df.iloc[index] = {'type':event, 'creatorUserName':creator,
+         'targetUserName':target, 'creatorUserId':creatorID,
+         'targetUserId':targetID, 'objectId':objectid, 'timestamp':timestamp,
+         'mongoID':mongoid,'creatorType':creatorType, 'targetType':targetType}
 
     #print(df.iloc[0])
     output(df)
